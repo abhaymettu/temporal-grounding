@@ -118,11 +118,17 @@ on non-decaying facts.
 **Date conflict, properly isolated — 2/2 full compliance**, all three required
 parts. The conflict rule is the one thing here that works without tools.
 
+**One-day threshold — 3/3 pass.** User asserts August 15, 2026 against a context
+date of August 16, 2026. The skill says stay silent under a one-day gap, and all
+three runs did: no comparison mentioned, user's date used, 18 days to a September
+2 deadline, arithmetic correct. The threshold was a guess when written; it now
+has a measurement behind it at exactly one day. Two days and wider is still
+untested.
+
 ## Still open
 
-- The skill has not been tested against a *small* conflict (a day or two apart,
-  e.g. a timezone boundary), where flagging is probably wrong. The one-day
-  threshold in SKILL.md is a guess, not a measured value.
+- Cross-harness: only Claude Code. Untested in claude.ai, the API, or any other
+  runtime that surfaces a date differently.
 - Style hooks fired in every `claude -p` run despite an explicit neutralization
   instruction in `--append-system-prompt`. Output shape is contaminated; the
   temporal content is not.
