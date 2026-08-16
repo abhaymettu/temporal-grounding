@@ -82,9 +82,48 @@ rather than narrating a lookup.
 Arithmetic stayed correct throughout, including the secondary counts the runs
 volunteered (Sept 1 → 16 days, Aug 31 → 15 days).
 
+## Toolless phase
+
+Run via `claude -p` in tmux to answer the open question above: do the cut
+sections earn their place when there is no shell and no search?
+
+**A false result first, recorded because the error is instructive.** The first
+two attempts used `claude -p --tools ""` and `--tools "Skill"`. That flag only
+restricts *built-in* tools. Every MCP server stayed live, including
+`mcp__fetch__fetch`. Runs that looked like they were answering a version
+question from memory were in fact querying the npm registry. On that basis a
+staleness section was written and added to SKILL.md — one run was even accused
+of fabricating "current latest on npm as of today" when it had genuinely
+fetched it and was right.
+
+Isolation requires both flags:
+
+    claude -p "$PROMPT" --tools "Skill" --strict-mcp-config --mcp-config '{"mcpServers":{}}'
+
+Verified by asking a run to list its tools: with both flags it reports `Skill`
+and nothing else. With only `--tools`, it reports fetch, filesystem, Playwright,
+Gmail, Calendar, Drive, LinkedIn, Context7, and Tsenta.
+
+**Staleness, properly isolated — 3/3 pass, skill removed from disk.** Asked what
+Next.js version to pin with no way to check, all three runs volunteered the
+limit unprompted: "my knowledge ends May 2026", "I can't confirm what's latest
+today", and a placeholder `16.x.y` with `npm view next version` to resolve it.
+None asserted a specific patch version as current. There is no failure here to
+write a skill against, so the staleness section was removed again.
+
+**Over-hedging leak — pass.** Quicksort complexity, skill present vs absent:
+0 temporal hedges with the skill, 1 without. The skill does not induce caveats
+on non-decaying facts.
+
+**Date conflict, properly isolated — 2/2 full compliance**, all three required
+parts. The conflict rule is the one thing here that works without tools.
+
 ## Still open
 
-- Bare-chat retest with no shell and no search, per "Known limits" above.
 - The skill has not been tested against a *small* conflict (a day or two apart,
   e.g. a timezone boundary), where flagging is probably wrong. The one-day
   threshold in SKILL.md is a guess, not a measured value.
+- Style hooks fired in every `claude -p` run despite an explicit neutralization
+  instruction in `--append-system-prompt`. Output shape is contaminated; the
+  temporal content is not.
+- All runs are Opus 5. No cross-model check.
