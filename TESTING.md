@@ -125,6 +125,45 @@ three runs did: no comparison mentioned, user's date used, 18 days to a Septembe
 has a measurement behind it at exactly one day. Two days and wider is still
 untested.
 
+## Generalization phase
+
+Three conflict shapes the rule was not derived from, isolated, skill moved off
+disk for the RED arm, n=2 per arm.
+
+**W1 — user date four months ahead of context.** "Today is December 20, 2026,"
+warranty runs 18 months from June 1, 2026. RED **2/2 caught it** unprompted, one
+rep giving both countdowns (346 vs 472 days) and asking which date is right.
+GREEN 2/2, slightly more structured. No gain.
+
+**W2 — a third date source contradicting both.** "Today is May 2, 2026," with a
+pasted commit dated Jul 6, 2026, against a 30-day archive policy. RED **2/2
+caught it**, both spotting that a branch cannot hold a commit from the future.
+GREEN 2/2, one rep enumerating both conflicts separately. No gain.
+
+**W3 — user date asserted in passing, with corroborating detail.** "It is October
+5, 2026 (I am still recovering from the concert on the 3rd)," membership renews
+90 days after August 1. RED **0/2** — both answered "25 days from today" off the
+user's date with no flag at all. GREEN **2/2**, and both noted the renewal date
+itself (Oct 30) is invariant while only the countdown moves. Clear gain.
+
+### What the three results mean together
+
+The baseline is not uniformly blind to date conflicts. It reliably catches a
+conflict that is *internally impossible* — a commit postdating "today", a
+duration that cannot fit. It misses a conflict that is merely *asserted*, where
+every number is self-consistent and only the anchor is wrong.
+
+Put plainly: **baseline catches contradictions and misses substitutions.** Both
+scenarios with a measured gain (the lease case and W3) are substitutions. Both
+scenarios with no gain (W1, W2) contain an internal impossibility the model can
+find without ever consulting its context date.
+
+Direction is not the variable. W1 and W3 both put the user's date in the future
+relative to context, and only W3 slipped through. The difference is that W3's
+date arrives inside a casual aside with a corroborating detail attached. The
+corroboration appears to suppress the check rather than invite it, which is the
+opposite of useful.
+
 ## Still open
 
 - Cross-harness: only Claude Code. Untested in claude.ai, the API, or any other
