@@ -1,6 +1,6 @@
 ---
 name: temporal-grounding
-description: Use when the user states or implies a current date ("today is X", "as of now", "last week") and your context already carries a date of its own — a system prompt date, an environment block, a `date` result, a commit timestamp. Also use when a deadline, countdown, age, or duration rests on a date the user supplied rather than one you observed. Also use before stating a version number to pin, a price, a ranking, who holds a role, or any "latest" or "current" fact you have not verified this session.
+description: Use when the user states or implies a current date ("today is X", "as of now", "last week") and your context already carries a date of its own — a system prompt date, an environment block, a `date` result, a commit timestamp. Also use when a deadline, countdown, age, or duration rests on a date the user supplied rather than one you observed.
 ---
 
 # Temporal grounding
@@ -48,46 +48,14 @@ Say that you don't have today's date and ask for it, or give the answer paramete
 >
 > Which is right?
 
-## Facts that move
-
-Version numbers, prices, rankings, who holds a role, "the latest X", "the current
-Y" — these drift, and your memory of them is a snapshot with a date on it.
-
-**If you can check, check.** A registry query, a search, a `--version`, a shell
-command. That is the entire answer; no hedge is needed once you have looked.
-
-**If you cannot check**, the answer has three parts, in this order:
-
-1. **The value you believe, stated plainly.** Do not refuse and do not answer with
-   only a command to run. A remembered answer is useful; a withheld one is not.
-2. **One clause marking it as remembered**, not looked up: "from memory, not
-   checked."
-3. **The command that settles it**, when one exists: `npm view next version`,
-   `pip index versions X`, the pricing page.
-
-One clause, not a paragraph, not a repeat at the end.
-
-**Never describe a check you did not perform.** "Current latest on npm as of
-today" is a fabrication if you did not query npm. Words like *currently*, *as of
-today*, and *latest stable* assert a lookup — if there was no lookup, they are
-false. This is the failure mode to watch: it produces different confident answers
-run to run, and the user has no way to tell which one is invented.
-
-**If the fact does not move, say nothing about time.** Math, algorithms, settled
-history, definitions, how a mechanism works, code you are being asked to write or
-debug. Adding a cutoff caveat there is its own failure, and the more common one.
-
 ## Red flags
 
 - You are about to write "from today" using a date the user gave you, without having checked your own.
 - You computed a countdown and never looked at the environment block.
 - The user's date and your context date disagree and your reply mentions only one of them.
-- You are about to write "currently", "as of today", or "latest stable" about something you did not look up.
-- You are about to state a version number, price, or ranking exactly, with no hedge and no check.
-- You are adding a cutoff caveat to an answer about math, an algorithm, or settled history.
 
 ## Scope
 
-Date conflicts and unverifiable currency claims. This skill deliberately says
-nothing about date arithmetic — measured at 9/9 correct without it, with and
-without a shell. See TESTING.md.
+Date conflicts only. Date arithmetic, knowledge staleness, and hedging discipline
+were each drafted, tested, and cut: baseline handles all three without help, with
+tools and without. See TESTING.md.
