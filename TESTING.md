@@ -164,6 +164,68 @@ date arrives inside a casual aside with a corroborating detail attached. The
 corroboration appears to suppress the check rather than invite it, which is the
 opposite of useful.
 
+## Application sweep
+
+The scenarios so far were all one shape: ephemeral chat Q&A where the user hands
+over a date and asks for a countdown. Four agents each proposed six realistic
+failures in an area that shape does not cover — durable artifacts, dates living
+inside pasted content, timezones and DST, and data recency plus stale agent
+sessions. Sixteen were run RED, isolated, skill off disk.
+
+**14 of 16 passed.** Baseline handled far more than expected:
+
+- DST: shift across fall-back correctly counted as 3 hours, not 2. The
+  nonexistent 02:30 on spring-forward was caught, Phoenix's lack of DST included.
+- A teammate a calendar day ahead was called correct rather than mistaken.
+- A zoneless log line was resolved against the actual wall clock and identified
+  as stamped in the *future*.
+- A stale session plan file was caught outright: "the plan file is stale: freeze
+  is 2 days out, not 7."
+- `now() - interval '2 years'` rather than a date literal; an injected clock in a
+  pytest rather than a wall-clock assertion; a changelog dated from the context
+  date correctly; fiscal Q3 with 76 days remaining, all correct.
+- An overdue TODO, a missed cert rotation, and a 16-month-old onboarding doc were
+  each flagged unprompted.
+
+**The 2 failures share a shape neither the axes nor the scenario authors
+predicted.** Both are generation, not analysis:
+
+- Asked to write a client email from a `STATUS.md` dated 2025-11-20, the output
+  was present tense throughout — "We're in integration testing", "One item is
+  blocking us" — with no mention anywhere that the source was nine months old.
+- Asked whether MAU is growing "right now" from a table ending 2025-11, it
+  correctly refused the trailing-12 average, then answered "growing, but
+  decelerating" in the present tense without noting the data ends nine months back.
+
+**The rule this yields: the model catches a stale document when asked to judge
+it, and transcribes it when asked to rewrite it.** Every evaluation task in the
+sweep passed. Both generation tasks failed. A source's "currently" is a claim
+about the source's date; copying it forward silently reasserts it as a claim
+about today, inside an artifact that then travels to someone else.
+
+## Two changes, both tested
+
+**Non-blocking conflicts.** The earlier text ended with "let the user pick, do
+not silently choose one and proceed." That blocks — it converts the user's
+question into a question they must answer first. Rewritten to state the gap in
+one line, lead with whatever does not depend on the anchor, give the dependent
+part under both readings, and end on the answer. GREEN 2/2 on the lease and gym
+conflicts: both ended on the answer, neither asked the user to choose, and both
+put the invariant first (the notice deadline and the renewal date come off other
+fixed dates, not off today).
+
+**Writing from a dated source.** New section. GREEN: the status email now carries
+its age in the subject line and body — where it travels to the recipient — not
+just in the reply to the requester. The MAU answer now says the data is ~9 months
+stale and attributes the trend to November 2025.
+
+**Leak control and the fix it forced.** A control ran the same status doc dated
+2026-08-14, two days old. First GREEN attempt leaked: it announced "Status doc is
+dated Aug 14, today is Aug 16, so it's 2 days old" before the email — exactly the
+added friction the skill is supposed to avoid. The generation section had no
+silence threshold, unlike the conflict rule. Added one, and re-ran: 2/2 now write
+the email straight with no age preamble, while the nine-month case still flags.
+
 ## Still open
 
 - Cross-harness: only Claude Code. Untested in claude.ai, the API, or any other
