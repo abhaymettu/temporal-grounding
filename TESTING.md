@@ -226,6 +226,20 @@ added friction the skill is supposed to avoid. The generation section had no
 silence threshold, unlike the conflict rule. Added one, and re-ran: 2/2 now write
 the email straight with no age preamble, while the nine-month case still flags.
 
+## Split
+
+Once the sweep showed the generation failure was a different failure with a
+different trigger, the two were split. `temporal-grounding` keeps the date
+conflict rule (707 words); `writing-from-dated-sources` takes the dated-source
+rule (643 words). Combined they had reached 1051 words in one file, well over the
+500-word guideline, and the two halves fire on disjoint requests — a countdown
+question never needs the generation rule, and a "write me an email from this doc"
+request never needs the conflict rule.
+
+Re-tested after the split, 5 scenarios: stale doc flags, stale data flags, fresh
+doc writes clean with no age preamble, no-conflict countdown stays plain,
+conflict flags and leads with the invariant. No regression from the split.
+
 ## Still open
 
 - Cross-harness: only Claude Code. Untested in claude.ai, the API, or any other

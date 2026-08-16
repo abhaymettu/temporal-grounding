@@ -1,13 +1,13 @@
 ---
 name: temporal-grounding
-description: Use when the user states or implies a current date ("today is X", "as of now", "last week") and your context already carries a date of its own — a system prompt date, an environment block, a `date` result, a commit timestamp. Also use when a deadline, countdown, age, or duration rests on a date the user supplied rather than one you observed. Also use when writing an email, summary, status blurb, report, or any prose whose content comes from a dated source: a status doc, a log, a ticket, a data export, a plan file, a memory note.
+description: Use when the user states or implies a current date ("today is X", "as of now", "last week") and your context already carries a date of its own — a system prompt date, an environment block, a `date` result, a commit timestamp. Also use when a deadline, countdown, age, or duration rests on a date the user supplied rather than one you observed.
 ---
 
 # Temporal grounding
 
 A date the user asserts is a claim. A date already in your context is evidence. When they disagree, you have a conflict, and the answer you compute from the wrong one is confidently useless.
 
-You already resolve this when the conflict is internally impossible — a commit postdating "today", a duration that cannot fit. You miss it when the wrong date is merely asserted and every other number is self-consistent. You catch a stale document when asked to judge it, and copy it forward when asked to rewrite it. Those two gaps are what this skill closes.
+You already resolve this when the conflict is internally impossible — a commit postdating "today", a duration that cannot fit. You miss it when the wrong date is merely asserted and every other number is self-consistent. That gap is what this skill closes.
 
 ## The required comparison
 
@@ -28,24 +28,6 @@ If they differ by more than a day, **answer anyway**. Do not stop and ask which 
 3. **The part that does depend on it** — under both readings, or under the one the user's other details corroborate, saying which you used.
 
 End on the answer, not on a question. If the date needs correcting, they will correct it.
-
-## Writing from a dated source
-
-When you are asked to *produce* something — an email, a standup blurb, a summary, a report, release notes — out of content that carries a date, the output inherits the source's **date**, not its **tense**.
-
-A status doc saying "currently blocked on X" is a claim about the day it was written. Copying that phrasing forward restates it as a claim about today, to someone who will act on it.
-
-Before writing, compare the source's date to your context date.
-
-If the source is only days old and its subject moves in weeks or months, it is current. Write the thing normally and say nothing about its age — announcing that a two-day-old status doc is two days old is noise, and noise is the cost this skill is trying not to add.
-
-If the gap is long enough that the subject could have changed:
-
-- Attribute rather than assert: "as of the November 20 status, the blocker was the Stripe credentials."
-- Put the age **in the output**, not only in your reply to the requester. The email is what gets sent; a caveat you kept for yourself does not travel with it.
-- Name what would need re-checking before the artifact is used.
-
-The same applies to data: a trend from a table whose last row is months old is a claim about that period, not about now. Say when the data ends before characterizing the present.
 
 ## If there is no date in context at all
 
@@ -71,13 +53,11 @@ Say that you don't have today's date and ask for it, or give the answer paramete
 - You computed a countdown and never looked at the environment block.
 - The user's date and your context date disagree and your reply mentions only one of them.
 - You are ending a reply by asking which date is right instead of answering under both.
-- You are drafting an email, blurb, or report from a dated document and have not looked at its date.
-- Your draft says "currently" or "we're" about something you know only from a file.
-- You are describing a trend in the present tense from data whose last row is months old.
 
 ## Scope
 
-Date conflicts, and dated sources copied into fresh prose. Date arithmetic,
-knowledge staleness, timezone and DST handling, and hedging discipline were each
-drafted or tested and cut: baseline handles them, with tools and without. See
-TESTING.md.
+Date conflicts only. Date arithmetic, knowledge staleness, timezone and DST
+handling, and hedging discipline were each drafted or tested and cut: baseline
+handles them, with tools and without. Writing fresh prose from a dated source is
+a separate measured failure, split into the `writing-from-dated-sources` skill.
+See TESTING.md.
