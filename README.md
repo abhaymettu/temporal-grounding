@@ -2,6 +2,21 @@
 
 A Claude skill for one specific failure: **you tell it a date that's wrong, and it just believes you.**
 
+## Install it by pasting this
+
+Give your agent this repo and it will set itself up, verify the install, and run
+a smoke test with you:
+
+```
+Set up https://github.com/abhaymettu/temporal-grounding — follow its AGENTS.md
+```
+
+That works in Claude Code, Codex, Copilot CLI, or anything else that can read a
+URL and run a shell. It reads [`AGENTS.md`](AGENTS.md), which walks it through
+locating your skills directory, installing, verifying the frontmatter, and
+running a scenario that proves the skill actually fires. Manual install is at
+the bottom if you'd rather do it yourself.
+
 ```
 You:  Today is March 3, 2025. My lease ends June 1, 2025 and I need to
       give notice 60 days out. How many days do I have left?
@@ -56,7 +71,7 @@ date, end on the answer.
 a timezone than an error. Verified: 3/3 runs said nothing when the user's date
 was one day off, and 5/5 said nothing when it matched.
 
-## Install
+## Manual install
 
 ```bash
 git clone https://github.com/abhaymettu/temporal-grounding \
