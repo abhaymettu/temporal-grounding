@@ -16,8 +16,8 @@ a smoke test with you:
 Set up https://github.com/abhaymettu/temporal-grounding — follow its AGENTS.md
 ```
 
-That works in Claude Code, Codex, Copilot CLI, or anything else that can read a
-URL and run a shell. It reads [`AGENTS.md`](AGENTS.md), which walks it through
+Verified on Claude Code. `AGENTS.md` also covers the `~/.agents/skills`
+convention other runtimes may read, but skill discovery there is untested. It reads [`AGENTS.md`](AGENTS.md), which walks it through
 locating your skills directory, installing, verifying the frontmatter, and
 running a scenario that proves the skill actually fires. Manual install is at
 the bottom if you'd rather do it yourself.
@@ -106,8 +106,9 @@ the methodology error that produced a wrong conclusion partway through and how i
 was caught.
 
 Built with the TDD-for-skills approach from
-[obra/superpowers](https://github.com/obra/superpowers): no guidance ships
-without a failing test behind it.
+[obra/superpowers](https://github.com/obra/superpowers): every rule here has a
+scenario behind it that failed before the rule existed. Those scenarios are
+author-written and author-graded.
 
 ## Related
 

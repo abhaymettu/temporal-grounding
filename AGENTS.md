@@ -29,21 +29,27 @@ If you cannot tell which runtime you are, ask the person. Do not guess.
 Assign it, and create it if needed:
 
 ```bash
-SKILLS_DIR=~/.claude/skills     # or ~/.agents/skills — set this to your row above
+SKILLS_DIR=~/.claude/skills   # or ~/.agents/skills — pick from the table above
 mkdir -p "$SKILLS_DIR" && echo "installing into $SKILLS_DIR"
 ```
 
-Use `"$SKILLS_DIR"` in every later command. It is a shell variable, not a
-placeholder to paste literally.
+**Every command block below re-declares `SKILLS_DIR` on its own first line.** That
+is deliberate: shell state does not survive between tool calls, and an unset
+`SKILLS_DIR` would turn the install and uninstall commands into operations on `/`.
+Edit the value in each block to match what you chose here. Do not delete the
+line, and do not assume it carries over.
 
 **Tell them:** which directory you chose and why.
 
 ## Step 2 — Install
 
 ```bash
+SKILLS_DIR=~/.claude/skills   # same value as Step 1
+set -u
 DEST="$SKILLS_DIR/temporal-grounding"
+case "$DEST" in /|/*/) echo "REFUSING: bad destination $DEST"; exit 1;; esac
 if [ -d "$DEST/.git" ]; then
-  git -C "$DEST" pull --ff-only
+  git -C "$DEST" fetch --depth 1 origin main && git -C "$DEST" reset --hard origin/main
 elif [ -e "$DEST" ]; then
   echo "EXISTS BUT NOT A GIT REPO — stop and ask"
 else
@@ -51,12 +57,16 @@ else
 fi
 ```
 
+(`fetch` + `reset` rather than `pull`, because `--depth 1` clones are shallow and
+`pull --ff-only` is unreliable against them.)
+
 If it printed `EXISTS BUT NOT A GIT REPO`, stop. Something is already at that
 path. Ask the person what they want to do; do not delete it.
 
 **Verify:**
 
 ```bash
+SKILLS_DIR=~/.claude/skills   # same value as Step 1
 head -4 "$SKILLS_DIR/temporal-grounding/SKILL.md"
 ```
 
@@ -65,8 +75,14 @@ means the install landed wrong.
 
 ## Step 3 — Confirm discovery
 
-Skills are read at session start, so this one is not active in the session you
-are in right now. Do not claim otherwise.
+In Claude Code, skills are read at session start, so this one is not active in
+the session you are in right now — do not claim otherwise.
+
+**Only Claude Code is verified.** `~/.agents/skills` is a convention other
+runtimes may read, but nothing here has been tested on Codex, Copilot CLI, or
+Gemini CLI, and how they load skills is their business, not this repo's. If you
+are on one of those, tell the person plainly that discovery is unverified and
+point them at their runtime's own docs before running any check.
 
 **Tell them:** "Installed. Start a new session, then paste the check in Step 4."
 
@@ -89,6 +105,10 @@ its own context and the gap to March 3, 2025**.
 - **Pass:** something like "you said March 3, 2025; my context says <today> —
   about N months apart", followed by the answer.
 - **Fail:** the deadline and day count with no mention of a second date.
+
+This runs in a session you cannot see. Ask them to paste the reply back, judge it
+against the criteria above, and tell them the verdict. Do not report a result you
+have not been shown.
 
 Two caveats worth stating to them:
 
@@ -118,14 +138,14 @@ A companion covers a related failure: rewriting a stale document into fresh
 present-tense prose, so a status doc from months ago becomes "we're currently
 blocked on X" in a new email.
 
-Ask whether they want it. If yes, repeat Steps 1–4 using
-`https://github.com/abhaymettu/writing-from-dated-sources`; its own `AGENTS.md`
-carries the matching smoke test.
+Ask whether they want it. If yes, follow that repo's own AGENTS.md — do not reuse the commands here, they hardcode this repo's URL and directory name:
+`https://github.com/abhaymettu/writing-from-dated-sources`.
 
 ## Uninstall
 
 ```bash
-rm -rf "$SKILLS_DIR/temporal-grounding"
+SKILLS_DIR=~/.claude/skills   # same value as Step 1
+rm -rf "${SKILLS_DIR:?set SKILLS_DIR first}/temporal-grounding"
 ```
 
 Nothing else is written anywhere: no hooks, no settings changes, no network calls
