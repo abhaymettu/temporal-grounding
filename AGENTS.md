@@ -19,12 +19,16 @@ No `OK` means git is missing or the network is blocked. Stop and say which.
 
 Pick by the runtime **you are currently running in**, not by what exists on disk:
 
-| You are | Use |
-|---|---|
-| Claude Code | `~/.claude/skills` |
-| Codex, Copilot CLI, Gemini CLI, anything else | `~/.agents/skills` |
+| You are | Use | Discovery |
+|---|---|---|
+| Claude Code | `~/.claude/skills` | verified |
+| Codex, Copilot CLI, Gemini CLI, anything else | `~/.agents/skills` | **untested — see Step 3** |
 
 If you cannot tell which runtime you are, ask the person. Do not guess.
+
+`~/.agents/skills` is a cross-runtime convention. Nothing in this repo has been
+tested on those runtimes. If that is your row, say so to the person before you
+install, not after.
 
 Assign it, and create it if needed:
 
@@ -120,7 +124,7 @@ have not been shown.
 Two caveats worth stating to them:
 
 - This is one sample from a language model, not a deterministic check. If the
-  result is ambiguous, run it twice more before concluding anything.
+  result is ambiguous, run it twice more and go with the majority of three.
 - The test only demonstrates the behaviour because March 3, 2025 is far in the
   past. If the machine's clock is anywhere near early 2025, the skill is correct
   to stay quiet and the test proves nothing.
