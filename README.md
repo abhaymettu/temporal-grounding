@@ -1,6 +1,11 @@
 # temporal-grounding
 
-A Claude skill for one specific failure: **you tell it a date that's wrong, and it just believes you.**
+A Claude skill for one narrow failure: **a date you assert, which conflicts with
+the date already in the model's context, and which nothing else in the request
+contradicts.**
+
+Not date reasoning in general — see [What it deliberately does not
+do](#what-it-deliberately-does-not-do), which is most of it.
 
 ## Install it by pasting this
 
@@ -23,23 +28,32 @@ You:  Today is March 3, 2025. My lease ends June 1, 2025 and I need to
 
 Without the skill:
       April 2, 2025. 30 days left.
-      (Correct arithmetic. The model's own context said August 16, 2026.
-       It never looked.)
+      (Correct arithmetic. The model's own context held a current date
+       ~17 months later. It never looked.)
 
 With the skill:
-      You said today is March 3, 2025; my context says August 16, 2026 —
+      You said today is March 3, 2025; my context says <today> —
       about 17 months apart, usually a stale copy-paste or a wrong clock.
 
       Either way the notice deadline is April 2, 2025. That comes off the
       lease end date, not off today.
 
-      From March 3: 30 days left. From August 16, 2026: it passed about
+      From March 3: 30 days left. From <today>: it passed about
       16 months ago, and the lease dates are stale too.
 ```
 
 It happens when a date gets pasted from an old email, an old note, or a document
 written earlier — everything downstream is self-consistent, so nothing looks
-wrong. Measured at **0/5 before, 6/6 after.**
+wrong.
+
+The baseline missed this in 5 of 5 runs; with the skill, 6 of 6 caught it. Small
+n, author-run and author-graded, on one scenario family. Treat it as a
+reproducible smoke test rather than a benchmark — [`TESTING.md`](TESTING.md) has
+every count and the limits.
+
+Where the baseline is *already* fine: a conflict that is internally impossible,
+like a commit dated after the stated "today". It reliably catches those unaided.
+This skill is for the case where only the anchor is wrong.
 
 ## What it deliberately does not do
 
@@ -68,8 +82,10 @@ rewritten: state the gap in one line, lead with whatever doesn't depend on the
 date, end on the answer.
 
 **It stays silent when the dates agree.** A gap of one day or less is more often
-a timezone than an error. Verified: 3/3 runs said nothing when the user's date
-was one day off, and 5/5 said nothing when it matched.
+a timezone than an error. 3/3 runs said nothing when the user's date was one day
+off, and 5/5 said nothing when it matched — 8 runs total, which is thin evidence
+for a false-positive claim. If it speaks up when it shouldn't, that's a bug worth
+an issue.
 
 ## Manual install
 
