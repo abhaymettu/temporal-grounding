@@ -62,7 +62,7 @@ baseline already handled them:
 
 | Drafted | Result | Verdict |
 |---|---|---|
-| Date arithmetic rules | 9/9 computations already correct, with and without a shell | cut |
+| Date arithmetic rules | 8/8 computations already correct, with and without a shell | cut |
 | Knowledge-staleness triage | 3/3 already volunteered "I can't confirm what's latest today" | cut |
 | Anti-over-hedging rules | 0 failures in 4 attempts | cut |
 
@@ -83,7 +83,7 @@ date, end on the answer.
 
 **It stays silent when the dates agree.** A gap of one day or less is more often
 a timezone than an error. 3/3 runs said nothing when the user's date was one day
-off, and 5/5 said nothing when it matched — 8 runs total, which is thin evidence
+off, and 3/3 said nothing when it matched — 6 runs total, which is thin evidence
 for a false-positive claim. If it speaks up when it shouldn't, that's a bug worth
 an issue.
 
